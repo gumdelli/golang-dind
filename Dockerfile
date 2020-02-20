@@ -1,4 +1,4 @@
-FROM golang:1.12
+FROM golang:1.12.7-stretch
 
 RUN apt-get update && \
     apt-get install -y \
@@ -34,7 +34,6 @@ ENV DOCKER_TLS_CERTDIR=/certs
 RUN mkdir /certs /certs/client && chmod 1777 /certs /certs/client
 # (doing both /certs and /certs/client so that if Docker does a "copy-up" into a volume defined on /certs/client, it will "do the right thing" by default in a way that still works for rootless users)
 
-RUN curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.22.2
-
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["sh"]
+
