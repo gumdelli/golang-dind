@@ -2,6 +2,9 @@ FROM golang:1.12.7-stretch
 
 RUN apt-get update && \
     apt-get install -y \
+            unzip \
+            postgresql-client \
+            openssh-client \
             apt-transport-https \
             ca-certificates \
             curl \
@@ -24,6 +27,25 @@ COPY docker-entrypoint.sh /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/modprobe
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+
+RUN ln -sf bash /bin/sh
+
+RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.6.2
+RUN curl -fsS "https://releases.hashicorp.com/vault/0.10.4/vault_0.10.4_linux_amd64.zip" | funzip > /bin/vault && chmod +x /bin/vault
+RUN echo -e '\n. ~/.asdf/asdf.sh' >> ~/.bashrc && \
+        echo -e '\n. ~/.asdf/completions/asdf.bash' >> ~/.bashrc && source ~/.bashrc && \
+        asdf plugin-add yq https://github.com/paxosglobal/asdf-yq.git && \
+        asdf plugin-add jq https://github.com/paxosglobal/asdf-jq.git
+RUN curl -fsS "https://releases.hashicorp.com/terraform/0.11.11/terraform_0.11.11_linux_amd64.zip" | funzip > /bin/terraform && chmod +x /bin/terraform
+
+RUN mkdir -p ~/.ssh
+RUN touch ~/.ssh/known_hosts
+RUN ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+
+
+
+
 
 # https://github.com/docker-library/docker/pull/166
 #   dockerd-entrypoint.sh uses DOCKER_TLS_CERTDIR for auto-generating TLS certificates
