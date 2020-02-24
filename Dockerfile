@@ -4,6 +4,7 @@ RUN apt-get update && \
     apt-get install -y \
             unzip \
             postgresql-client \
+            netcat \
             openssh-client \
             apt-transport-https \
             ca-certificates \
