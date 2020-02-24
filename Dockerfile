@@ -38,14 +38,13 @@ RUN echo -e '\n. ~/.asdf/asdf.sh' >> ~/.bashrc && \
         asdf plugin-add yq https://github.com/paxosglobal/asdf-yq.git && \
         asdf plugin-add jq https://github.com/paxosglobal/asdf-jq.git
 RUN curl -fsS "https://releases.hashicorp.com/terraform/0.11.11/terraform_0.11.11_linux_amd64.zip" | funzip > /bin/terraform && chmod +x /bin/terraform
+RUN source ~/.bashrc && asdf plugin-add nodejs && bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
+RUN source ~/.bashrc && asdf install nodejs 11.14.0
+RUN source ~/.bashrc && asdf global nodejs 11.14.0
 
 RUN mkdir -p ~/.ssh
 RUN touch ~/.ssh/known_hosts
 RUN ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-
-
-
-
 
 # https://github.com/docker-library/docker/pull/166
 #   dockerd-entrypoint.sh uses DOCKER_TLS_CERTDIR for auto-generating TLS certificates
