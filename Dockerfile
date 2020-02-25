@@ -5,6 +5,7 @@ RUN apt-get update && \
             unzip \
             postgresql-client \
             netcat \
+            python-pip \
             openssh-client \
             apt-transport-https \
             ca-certificates \
@@ -29,9 +30,13 @@ COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/modprobe
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
+# setup docker-compose
+#RUN curl -L https://github.com/docker/compose/releases/download/1.25.4/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+#RUN chmod +x /usr/local/bin/docker-compose
+RUN pip install 'docker-compose==1.25.4'
 
 RUN ln -sf bash /bin/sh
-
+# setup asdf, nodejs and add github.com to known_hosts
 RUN git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.6.2
 RUN curl -fsS "https://releases.hashicorp.com/vault/0.10.4/vault_0.10.4_linux_amd64.zip" | funzip > /bin/vault && chmod +x /bin/vault
 RUN echo -e '\n. ~/.asdf/asdf.sh' >> ~/.bashrc && \
